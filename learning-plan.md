@@ -12,7 +12,7 @@
 - [x] 学员画像 `profile.md`
 - [x] 学习计划 `learning-plan.md`
 - [ ] 配置 Learning Agent 与每日打卡节奏
-- [ ] 跑通第一次每日打卡流程（生成草稿 → WCB 手动提交 → 回填链接）
+- [x] 跑通第一次每日学习记录流程（写 daily note → commit + push 到 GitHub）
 - [ ] 阅读 [LLM](https://aiweb3.school/zh/handbook/ai/llm/) 建立共同语言
 
 ## 第 1 阶段 · AI 基础

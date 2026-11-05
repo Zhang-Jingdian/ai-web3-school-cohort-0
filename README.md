@@ -2,6 +2,8 @@
 
 我的 AI × Web3 School 学习日志与 proof-of-work 工作区。目标不是「把课程读完」，而是理解 AI 与 Web3 真正交叉时的问题，并把学习过程沉淀成可开源、可索引、可复盘的记录。
 
+> 状态：WCB 残酷共学（Cohort）打卡已结束、入口关闭；本仓库作为学习记录与 proof-of-work，继续以 GitHub 笔记形式沉淀。
+
 ## 入口链接
 
 - Handbook：<https://aiweb3.school/zh/handbook/>
