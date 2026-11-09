@@ -13,14 +13,14 @@
 - [x] 学习计划 `learning-plan.md`
 - [ ] 配置 Learning Agent 与每日打卡节奏
 - [x] 跑通第一次每日学习记录流程（写 daily note → commit + push 到 GitHub）
-- [ ] 阅读 [LLM](https://aiweb3.school/zh/handbook/ai/llm/) 建立共同语言
+- [x] 阅读 [LLM](https://aiweb3.school/zh/handbook/ai/llm/) 建立共同语言（已完成）
 
 ## 第 1 阶段 · AI 基础
 
 按顺序读，建立模型、上下文、检索与工具调用的共同语言。
 
-- [ ] [大语言模型（LLM）](https://aiweb3.school/zh/handbook/ai/llm/)
-- [ ] [提示词（Prompt）](https://aiweb3.school/zh/handbook/ai/prompt/)
+- [x] [大语言模型（LLM）](https://aiweb3.school/zh/handbook/ai/llm/)（已完成）
+- [ ] [提示词（Prompt）](https://aiweb3.school/zh/handbook/ai/prompt/)（进行中，2026-11-09）
 - [ ] [上下文（Context）](https://aiweb3.school/zh/handbook/ai/context/)
 - [ ] [检索增强生成（RAG）](https://aiweb3.school/zh/handbook/ai/rag/)
 - [ ] [智能体（Agent）](https://aiweb3.school/zh/handbook/ai/agent/)
