@@ -20,8 +20,8 @@
 按顺序读，建立模型、上下文、检索与工具调用的共同语言。
 
 - [x] [大语言模型（LLM）](https://aiweb3.school/zh/handbook/ai/llm/)（已完成）
-- [ ] [提示词（Prompt）](https://aiweb3.school/zh/handbook/ai/prompt/)（进行中，2026-11-09）
-- [ ] [上下文（Context）](https://aiweb3.school/zh/handbook/ai/context/)
+- [x] [提示词（Prompt）](https://aiweb3.school/zh/handbook/ai/prompt/)（2026-11-09）
+- [ ] [上下文（Context）](https://aiweb3.school/zh/handbook/ai/context/)（进行中，2026-11-10）
 - [ ] [检索增强生成（RAG）](https://aiweb3.school/zh/handbook/ai/rag/)
 - [ ] [智能体（Agent）](https://aiweb3.school/zh/handbook/ai/agent/)
 - [ ] [框架（Frameworks）](https://aiweb3.school/zh/handbook/ai/frameworks/)
