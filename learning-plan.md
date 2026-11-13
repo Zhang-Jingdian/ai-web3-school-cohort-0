@@ -23,8 +23,8 @@
 - [x] [提示词（Prompt）](https://aiweb3.school/zh/handbook/ai/prompt/)（2026-11-09）
 - [x] [上下文（Context）](https://aiweb3.school/zh/handbook/ai/context/)（2026-11-10）
 - [x] [检索增强生成（RAG）](https://aiweb3.school/zh/handbook/ai/rag/)（2026-11-11）
-- [ ] [智能体（Agent）](https://aiweb3.school/zh/handbook/ai/agent/)（进行中，2026-11-12）
-- [ ] [框架（Frameworks）](https://aiweb3.school/zh/handbook/ai/frameworks/)
+- [x] [智能体（Agent）](https://aiweb3.school/zh/handbook/ai/agent/)（2026-11-12）
+- [ ] [框架（Frameworks）](https://aiweb3.school/zh/handbook/ai/frameworks/)（进行中，2026-11-13）
 - [ ] [氛围编程（Vibe Coding）](https://aiweb3.school/zh/handbook/ai/vibe-coding/)
 - [ ] [模型上下文协议（MCP）](https://aiweb3.school/zh/handbook/ai/mcp/)
 - [ ] [评估（Evaluation）](https://aiweb3.school/zh/handbook/ai/evaluation/)
