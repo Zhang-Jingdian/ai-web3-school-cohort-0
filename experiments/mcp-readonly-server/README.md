@@ -1,77 +1,76 @@
-# 只读 MCP Server（最小实践）
+# 只读 + 写入（带权限模型）的 MCP Server
 
-对应 Handbook「模型上下文协议（MCP）」章节的最小实践：**做一个只读 MCP server**，
-只暴露两个工具，并验证四条硬约束。
+对应 Handbook「模型上下文协议（MCP）」章节的最小实践，分两步做完：
+
+1. **只读 server** —— `search_docs` / `get_file`，验证四条硬约束。
+2. **写入工具的权限升级** —— `write_file` / `grant_write` / `revoke_write`，把「默认拒绝、
+   逐次确认、可撤销、可审计」真正实现成代码（不是只写设计文档）。
 
 ## 结构
 
 ```
 mcp-readonly-server/
-├── server.py          # 只读 MCP server（search_docs + get_file）
-├── test_client.py     # MCP client 冒烟测试：拉起 server 并逐条调用
-├── docs/              # 白名单目录（只允许读取这里）
+├── server.py          # MCP server：2 个只读工具 + 3 个带权限的写入工具
+├── test_client.py     # MCP client 冒烟测试：拉起 server，逐条调用（含 elicitation 回调）
+├── docs/              # 白名单目录（读、写共用同一边界）
 │   ├── protocol.md    # 示例文档
 │   └── notes-mcp.md   # 示例文档
-├── logs/calls.log     # 运行时生成，每次工具调用都会写一行（已 gitignore）
+├── logs/              # 运行时生成：calls.log（每次调用）、audit.log（写/授权/撤销审计）
+├── .gitignore         # 忽略 logs/、测试生成的 docs/hello.md
 └── requirements.txt
 ```
 
-## 两个工具
+## 五个工具
 
-| 工具 | 作用 | 约束 |
-| --- | --- | --- |
-| `search_docs(query)` | 在白名单文档里按关键词搜索 | 结果带 `source` 路径 + `hits` + `snippet` |
-| `get_file(path)` | 读取白名单目录里的一个文件 | 结果带 `source` 路径；越界 / 穿越直接拒绝 |
+| 工具 | 作用 | 是否有副作用 | 约束 |
+| --- | --- | --- | --- |
+| `search_docs(query)` | 在白名单文档里按关键词搜索 | 只读 | 结果带 `source` |
+| `get_file(path)` | 读取白名单目录里的一个文件 | 只读 | 越界/穿越直接拒绝 |
+| `write_file(path, content)` | 写入文件 | **有副作用** | 默认拒绝，需用户逐次确认 |
+| `grant_write(path)` | 授权「本会话免确认写入某路径」 | 有副作用 | 授权本身也需用户确认 |
+| `revoke_write(grant_id)` | 撤销一条写入授权 | 降低权限 | 无需确认 |
 
-## 四条硬约束（怎么落地）
+## 四条硬约束（只读侧）
 
-对应章节「第一性原理」的三条硬规则 + 最小实践要求，每条都能在代码里指认：
+对应章节「第一性原理」的三条硬规则 + 最小实践要求：
 
-1. **工具要有 schema** —— `get_file(path: str)` / `search_docs(query: str)` 的类型注解与
-   docstring 由 `MCPServer` 自动转成 MCP 的 input schema，client 侧 `list_tools` 能读到。
+1. **工具要有 schema** —— 类型注解 + docstring 由 `MCPServer` 自动转成 MCP input schema。
 2. **不能读取白名单外路径** —— `_safe_resolve()` 用 `Path.resolve()` + `relative_to()` 校验，
    `get_file("../../../.env")` 这类路径穿越会被拒绝。
-3. **错误要可传递** —— 所有失败都返回 `{"ok": false, "error": ...}`，不抛异常、不静默吞掉。
-4. **权限要在协议外也成立** —— 协议只描述「能读什么」，真正的授权/审计/隔离由 server
-   自己的代码实现（白名单、日志），而不是靠模型自觉。
+3. **错误要可传递** —— 所有失败返回 `{"ok": false, "error": ...}`，不抛异常、不静默吞掉。
+4. **权限要在协议外也成立** —— 协议只描述「能读什么」，真正的授权/审计由 server 自己的代码实现。
+
+## 写入权限模型（写入侧，已实现）
+
+对应章节 Permission 节点。三条，每条都在 `server.py` 里有对应实现：
+
+1. **默认拒绝（逐次确认）**：没有授权时，`write_file` 通过 MCP **elicitation**（`Resolve` + `Elicit`）
+   弹用户确认；用户拒绝 / 取消 → 明确返回错误、不执行，并写审计日志。
+2. **可撤销的授权**：`grant_write` 授予「本会话免确认写入某路径」（返回 `grant_id`），
+   `revoke_write` 随时吊销；吊销后回到「逐次确认」。
+3. **可审计**：每次写入 / 授权 / 撤销都追加一行到 `logs/audit.log`（只追加、不覆盖），
+   记录操作类型、目标路径、时间、内容 `sha256`、字节数。
+
+> 说明：授权登记表 `_GRANTS` 是进程内存态（单个 stdio 连接足够演示）；生产环境应持久化并绑定账户 / session。
 
 ## 运行
 
 ```bash
 cd /Users/zjd/workbench/ai-web3-school-cohort-0
 
-# 跑 client 冒烟测试（会拉起 server，逐条调用工具）
+# 跑 client 冒烟测试（会拉起 server，覆盖只读 + 写入 + 权限全流程）
 .venv/bin/python experiments/mcp-readonly-server/test_client.py
 ```
 
-观察点：
+观察点（对应 `test_client.py` 里的 10 个断言）：
 
-- `search_docs("owner")` 返回命中项，带 `source: "protocol.md"`。
-- `get_file("protocol.md")` 返回文件内容，带 `source`。
-- `get_file("../../../.env")` 被明确拒绝，返回 `ok: false`。
-- `search_docs("   ")` 明确报错，而不是返回空结果。
-- 每次调用在 `logs/calls.log` 留下一条记录（INFO / WARNING）。
+- 只读侧：`search_docs("owner")` 带 `source`；`get_file("../../../.env")` 被拒绝；空 query 报错。
+- 写入侧（关键）：
+  - 第一次 `write_file` 弹确认 → **用户拒绝** → 返回 `ok: false`，文件没写。
+  - 第二次 `write_file` → **用户同意** → 写入成功，返回 `sha256`。
+  - `grant_write` → 返回 `grant-1`。
+  - 授权后再 `write_file` → **不再弹确认**（直接写入）。
+  - `revoke_write` → 撤销 `grant-1`。
+  - 撤销后再 `write_file` → **又弹确认**。
 
-## 下一步：写入工具的权限升级方案（章节最小实践的后半段）
-
-当前 server 只有只读工具。要加一个「写入工具」（例如 `write_file` / `create_pr`），权限模型
-必须先行，否则「方便」会变成「危险」。设计如下：
-
-| 维度 | 只读工具（现状） | 写入工具（需新增） |
-| --- | --- | --- |
-| 动作类型 | 只读 | 有副作用（改文件 / 发请求 / 转账） |
-| 授权 | 无需逐次确认 | **默认拒绝，逐次要求用户确认** |
-| 会话 | 本次会话 | 区分「单次授权」vs「长期授权」，长期授权要能撤销 |
-| 敏感信息 | 不接触 | 是否可写敏感路径需单独授权 |
-| 审计 | 日志记录调用 | 日志记录「谁、何时、写了什么、是否撤销」 |
-
-具体到实现，写入工具至少要满足：
-
-1. **白名单写**：写入路径同样受白名单约束，且与读取白名单分开（可写范围更小）。
-2. **用户确认**：调用前必须返回一个需要用户确认的结果，而不是直接执行
-   （对应 MCP 的 elicitation / 权限提示机制）。
-3. **可撤销**：长期授权要有 session key 或 token，可随时吊销。
-4. **审计日志**：每次写入记录操作者、目标路径、diff、时间，且日志只追加、不可改。
-
-> 结论：**MCP 负责「工具发现 + 调用格式」，账户 / 权限 / 审计由系统实现**——协议能描述能力，
-> 但不能替你承担安全责任。
+跑完看 `logs/audit.log`，能看到完整的权限生命周期：`declined → approved → granted → approved → revoked → approved`。
