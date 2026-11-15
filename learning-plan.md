@@ -25,8 +25,8 @@
 - [x] [检索增强生成（RAG）](https://aiweb3.school/zh/handbook/ai/rag/)（2026-11-11）
 - [x] [智能体（Agent）](https://aiweb3.school/zh/handbook/ai/agent/)（2026-11-12）
 - [x] [框架（Frameworks）](https://aiweb3.school/zh/handbook/ai/frameworks/)（2026-11-13）
-- [ ] [氛围编程（Vibe Coding）](https://aiweb3.school/zh/handbook/ai/vibe-coding/)（进行中，2026-11-14）
-- [ ] [模型上下文协议（MCP）](https://aiweb3.school/zh/handbook/ai/mcp/)
+- [x] [氛围编程（Vibe Coding）](https://aiweb3.school/zh/handbook/ai/vibe-coding/)（2026-11-14）
+- [x] [模型上下文协议（MCP）](https://aiweb3.school/zh/handbook/ai/mcp/)（2026-11-15）
 - [ ] [评估（Evaluation）](https://aiweb3.school/zh/handbook/ai/evaluation/)
 - [ ] [微调（Fine-tuning）](https://aiweb3.school/zh/handbook/ai/fine-tuning/)
 - [ ] [推理服务（Inference）](https://aiweb3.school/zh/handbook/ai/inference/)

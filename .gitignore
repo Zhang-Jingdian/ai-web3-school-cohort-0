@@ -5,3 +5,6 @@ __pycache__/
 
 # 密钥，不要提交
 .env
+
+# MCP server 运行时日志
+logs/
