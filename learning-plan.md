@@ -27,7 +27,7 @@
 - [x] [框架（Frameworks）](https://aiweb3.school/zh/handbook/ai/frameworks/)（2026-11-13）
 - [x] [氛围编程（Vibe Coding）](https://aiweb3.school/zh/handbook/ai/vibe-coding/)（2026-11-14）
 - [x] [模型上下文协议（MCP）](https://aiweb3.school/zh/handbook/ai/mcp/)（2026-11-15）
-- [ ] [评估（Evaluation）](https://aiweb3.school/zh/handbook/ai/evaluation/)
+- [x] [评估（Evaluation）](https://aiweb3.school/zh/handbook/ai/evaluation/)（2026-11-16）
 - [ ] [微调（Fine-tuning）](https://aiweb3.school/zh/handbook/ai/fine-tuning/)
 - [ ] [推理服务（Inference）](https://aiweb3.school/zh/handbook/ai/inference/)
 
